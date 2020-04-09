@@ -41,11 +41,10 @@ func readFromCommandLine() {
 			go timer(*timeLimit, checkTime, response)
 			scanner.Scan()
 			answer := scanner.Text()
-			fmt.Println(answer, "answer")
+			// TODO: It's blocking here, need to fix this
 			checkTime <- answer
-			fmt.Println("kfowief")
 			value := <- response
-			fmt.Println("if yu see This it doesnt block")
+
 			if !value {
 				fmt.Println("You were too slow!")
 				break
@@ -61,11 +60,9 @@ func readFromCommandLine() {
 
 func timer(timeLimit int, answer <-chan string, response chan bool) {
 	timer := time.NewTicker(time.Duration(timeLimit))
-	fmt.Println("here")
 
 	select {
 	case value := <-answer:
-		fmt.Println("here bitch")
 		if value == "" {
 			response <- false
 		} else {
