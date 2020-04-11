@@ -74,12 +74,9 @@ func timer(timeLimit int, answer chan string, response chan<- interface{}) {
 	case userAnswer := <-answer:
 		response <- userAnswer
 		timer.Stop()
-		break
 	case <-timer.C:
 		response <- false
 		timer.Stop()
-		break
-
 	}
 
 }
