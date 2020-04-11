@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"time"
+	"strconv"
 )
 
 func main() {
@@ -20,17 +21,19 @@ func readFromCommandLine() {
 	timeLimit := flag.Int("time", 10, "set a time limit for a question to be answered in")
 	flag.Parse()
 	file, err := os.Open(*fileToUse)
-	defer file.Close()
 	if err != nil {
 		log.Fatalln("couldn't open csv file", err)
 	}
+	defer file.Close()
 	questions := csv.NewReader(file)
 	scanner := bufio.NewScanner(os.Stdin)
 	correctAnswers := 0
 	totalAmountOfQuestions := 0
 
-	checkTime := make(chan string)
-	response := make(chan bool)
+	answer := make(chan string)
+	response := make(chan interface{})
+
+loop:
 	for {
 			question, err := questions.Read()
 			if err == io.EOF {
@@ -38,19 +41,25 @@ func readFromCommandLine() {
 				break
 			}
 			fmt.Println(question[0])
-			go timer(*timeLimit, checkTime, response)
-			scanner.Scan()
-			answer := scanner.Text()
-			// TODO: It's blocking here, need to fix this
-			checkTime <- answer
+			go timer(*timeLimit, answer, response)
+			go scan(scanner, answer)
+
 			value := <- response
 
-			if !value {
-				fmt.Println("You were too slow!")
-				break
+			switch userAnswer := value.(type) {
+			case bool:
+				fmt.Println("You were too slow! But nice try ( ͡~ ͜ʖ ͡°)\nYour final score is:", correctAnswers)
+				break loop
+
+			case string:
+				_, err := strconv.Atoi(userAnswer)
+				if err != nil {
+					fmt.Printf("This is not a number! You need to type a number! Preferably the correct one ( ͡° ͜ʖ ͡°)")
+					break loop
+				}
 			}
 
-			if question[1] == answer {
+			if question[1] == value {
 				correctAnswers += 1
 			}
 			totalAmountOfQuestions += 1
@@ -58,16 +67,12 @@ func readFromCommandLine() {
 		}
 	}
 
-func timer(timeLimit int, answer <-chan string, response chan bool) {
-	timer := time.NewTicker(time.Duration(timeLimit))
+func timer(timeLimit int, answer chan string, response chan<- interface{}) {
+	timer := time.NewTicker(time.Second * time.Duration(timeLimit))
 
 	select {
-	case value := <-answer:
-		if value == "" {
-			response <- false
-		} else {
-			response <- true
-		}
+	case userAnswer := <-answer:
+		response <- userAnswer
 		timer.Stop()
 		break
 	case <-timer.C:
@@ -75,8 +80,12 @@ func timer(timeLimit int, answer <-chan string, response chan bool) {
 		timer.Stop()
 		break
 
-
-
 	}
 
+}
+
+func scan(scanner *bufio.Scanner, answer chan<- string) {
+	scanner.Scan()
+	userAnswer := scanner.Text()
+	answer <- userAnswer
 }

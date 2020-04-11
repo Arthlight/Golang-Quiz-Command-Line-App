@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6316bacb-eb53-4ccb-9a2b-e73988c85bfb" name="Default Changelist" comment="" />
+    <list default="true" id="6316bacb-eb53-4ccb-9a2b-e73988c85bfb" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,6 +18,7 @@
     <option name="indexEntireGoPath" value="false" />
   </component>
   <component name="ProjectId" id="1a7mNeB0WCcARpwbdqnBPwKJ2y2" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -22,6 +26,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$" />
@@ -76,5 +81,9 @@
     </state>
     <state width="1134" height="256" key="GridCell.Tab.0.right/0.23.1680.954@0.23.1680.954" timestamp="1586268092002" />
     <state width="1134" height="256" key="GridCell.Tab.0.right/0.23.1680.960@0.23.1680.960" timestamp="1586280798374" />
+    <state x="563" y="303" width="670" height="676" key="search.everywhere.popup" timestamp="1586611930701">
+      <screen x="0" y="23" width="1680" height="956" />
+    </state>
+    <state x="563" y="303" width="670" height="676" key="search.everywhere.popup/0.23.1680.956@0.23.1680.956" timestamp="1586611930701" />
   </component>
 </project>
