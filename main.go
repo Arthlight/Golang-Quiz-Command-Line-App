@@ -27,45 +27,50 @@ func readFromCommandLine() {
 	defer file.Close()
 	questions := csv.NewReader(file)
 	scanner := bufio.NewScanner(os.Stdin)
+
+	startGame(questions, scanner, timeLimit)
+}
+
+func startGame(questions *csv.Reader, scanner *bufio.Scanner, timeLimit *int) {
 	correctAnswers := 0
 	totalAmountOfQuestions := 0
 
 	answer := make(chan string)
 	response := make(chan interface{})
 
-loop:
-	for {
-			question, err := questions.Read()
-			if err == io.EOF {
-				fmt.Println("Your final score is:", correctAnswers, "(out of", totalAmountOfQuestions, "questions)")
-				break
-			}
-			fmt.Println(question[0])
-			go timer(*timeLimit, answer, response)
-			go scan(scanner, answer)
-
-			value := <- response
-
-			switch userAnswer := value.(type) {
-			case bool:
-				fmt.Println("You were too slow! But nice try ( ͡~ ͜ʖ ͡°)\nYour final score is:", correctAnswers)
-				break loop
-
-			case string:
-				_, err := strconv.Atoi(userAnswer)
-				if err != nil {
-					fmt.Printf("This is not a number! You need to type a number! Preferably the correct one ( ͡° ͜ʖ ͡°)")
-					break loop
+	loop:
+		for {
+				question, err := questions.Read()
+				if err == io.EOF {
+					fmt.Println("Your final score is:", correctAnswers, "(out of", totalAmountOfQuestions, "questions)")
+					break
 				}
-			}
+				fmt.Println(question[0])
+				go timer(*timeLimit, answer, response)
+				go scan(scanner, answer)
 
-			if question[1] == value {
-				correctAnswers += 1
-			}
-			totalAmountOfQuestions += 1
+				value := <- response
 
-		}
-	}
+				switch userAnswer := value.(type) {
+				case bool:
+					fmt.Println("You were too slow! But nice try ( ͡~ ͜ʖ ͡°)\nYour final score is:", correctAnswers)
+					break loop
+
+				case string:
+					_, err := strconv.Atoi(userAnswer)
+					if err != nil {
+						fmt.Println("This is not a number! You need to type a number! Preferably the correct one ( ͡° ͜ʖ ͡°)")
+						break loop
+					}
+				}
+
+				if question[1] == value {
+					correctAnswers += 1
+				}
+				totalAmountOfQuestions += 1
+
+			}
+}
 
 func timer(timeLimit int, answer chan string, response chan<- interface{}) {
 	timer := time.NewTicker(time.Second * time.Duration(timeLimit))
